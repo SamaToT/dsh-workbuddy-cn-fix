@@ -1,0 +1,16 @@
+# dsh-workbuddy-cn-fix: repairs the CN path of dsh-workbuddy-connect.
+#
+# WorkBuddy's CN upstream (copilot.tencent.com) runs a channel check on the
+# opening of the system message and answers a prompt that opens with a rival
+# client identity line with HTTP 400 / code 11128 ("Illegal API invocation
+# from an unapproved channel"), and it also rejects the `developer` role that
+# pi-ai emits for reasoning models. The shipped plugin only normalizes the
+# role and neutralizes the signature on the INTERNATIONAL path; the CN path
+# (prepareCnChatBody) does neither, so every DSH request to workbuddy is
+# rejected. This bundle restores both on the CN path.
+#
+# The patch is applied at activation, so a plugin reinstall (which replaces
+# node_modules) is repaired on the next start instead of silently breaking.
+- insert:
+    - id: workbuddy-cn-fix
+      name: dsh-workbuddy-cn-fix
